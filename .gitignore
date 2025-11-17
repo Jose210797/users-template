@@ -34,4 +34,3 @@ build/
 ##project
 .env
 logs/
-import.sql
