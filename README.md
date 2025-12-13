@@ -16,3 +16,10 @@ DB_USER=user-db-name    # Usuario de la base de datos
 DB_PASSWORD=password-db # Contraseña de la base de datos
 DB_HOST=db-host         # Host de la base de datos
 DB_PORT=db-port         # Puerto de la base de datos
+
+# Configuración JWT (Opcional - usa valores por defecto si no se especifican)
+JWT_SECRET=una-clave-muy-segura-que-es-recomendado-cambiar-en-produccion
+JWT_EXPIRATION=86400000      # 24 horas en milisegundos
+JWT_REFRESH_EXPIRATION=604800000  # 7 días en milisegundos
+
+
