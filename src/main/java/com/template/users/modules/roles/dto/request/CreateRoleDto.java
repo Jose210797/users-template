@@ -15,7 +15,7 @@ public class CreateRoleDto {
 
     @NotNull
     @Size(min = 1, message = "Debe asignar al menos una acción al rol")
-    private List<Long> actionIds;
+    private List<Long> actions;
 
 
     public String getName() {
@@ -28,14 +28,15 @@ public class CreateRoleDto {
     }
 
 
-    public List<Long> getActionIds() {
-        return actionIds;
+    public List<Long> getActions() {
+        return actions;
     }
 
 
-    public void setActionIds(List<Long> actionIds) {
-        this.actionIds = actionIds;
+    public void setActions(List<Long> actions) {
+        this.actions = actions;
     }
+
 
     
     

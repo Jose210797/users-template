@@ -21,30 +21,32 @@ public class RoleService {
     private final IActionRepository actionRepository;
     private final IRoleActionRepository roleActionRepository;
     private final RoleValidationService roleValidation;
-    private final RoleMapper roleMapper = new RoleMapper();
-
+    private final RoleMapper roleMapper;
+    
     public RoleService(
         IRoleRepository roleRepository, IActionRepository actionRepository, 
-        IRoleActionRepository roleActionRepository, RoleValidationService roleValidation
+        IRoleActionRepository roleActionRepository, RoleValidationService roleValidation,
+        RoleMapper roleMapper
     ) {
         this.roleRepository = roleRepository;
         this.actionRepository = actionRepository;
         this.roleActionRepository = roleActionRepository;
         this.roleValidation = roleValidation;
+        this.roleMapper = roleMapper;
     }
 
     @Transactional
     public RoleCreatedMapped createRole(CreateRoleDto createRoleDto) {
         this.roleValidation.validateExistNameRole(createRoleDto.getName());
         
-        this.roleValidation.validateActionsExist(createRoleDto.getActionIds());
+        this.roleValidation.validateActionsExist(createRoleDto.getActions());
 
         RoleEntity role = new RoleEntity();
         role.setName(createRoleDto.getName());
         role.setActive(true);
         RoleEntity roleCreated = roleRepository.save(role);
 
-        List<ActionEntity> actions = actionRepository.findAllById(createRoleDto.getActionIds());
+        List<ActionEntity> actions = actionRepository.findAllById(createRoleDto.getActions());
 
         for (ActionEntity action : actions) {
             RoleAction roleAction = new RoleAction();
