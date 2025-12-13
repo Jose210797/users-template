@@ -2,7 +2,6 @@ package com.template.users.modules.roles.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +16,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/roles")
-@Validated
 public class RoleController {
     private final RoleService roleService;
 
@@ -29,6 +27,9 @@ public class RoleController {
     @PostMapping
     public CustomResponse<RoleCreatedMapped> createRole(@Valid @RequestBody CreateRoleDto createRoleDto) {
         RoleCreatedMapped createdRole = roleService.createRole(createRoleDto);
-        return new CustomResponse<RoleCreatedMapped>("Rol creado exitosamente", createdRole, HttpStatus.CREATED.value());
+        return new CustomResponse<RoleCreatedMapped>(
+                "Rol creado exitosamente",
+                createdRole,
+                HttpStatus.CREATED.value());
     }
 }
