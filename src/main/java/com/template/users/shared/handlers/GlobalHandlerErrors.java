@@ -3,8 +3,10 @@ package com.template.users.shared.handlers;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -64,9 +66,9 @@ public class GlobalHandlerErrors {
 
     @ExceptionHandler(NoResourceFoundException.class)
     public CustomResponse<Object> handleResourceExceptions(Exception ex, HttpServletRequest request) {
-        
+
         String resourceMessage = "El recurso que intenta acceder no está disponible o no existe.";
-        
+
         return new CustomResponse<>(resourceMessage, null, HttpStatus.NOT_FOUND.value());
     }
 
@@ -74,19 +76,31 @@ public class GlobalHandlerErrors {
     public CustomResponse<Object> handleGenericExceptions(Exception ex) {
         HttpServletRequest request = getCurrentHttpRequest();
         String errorId = serverErrorLoggingService.logServerError(ex, request);
-        
+
         String userMessage = String.format(
-            "Ocurrió un error inesperado. Por favor contacte al administrador. Código de error: %s", 
-            errorId
-        );
-        
+                "Ocurrió un error inesperado. Por favor contacte al administrador. Código de error: %s",
+                errorId);
+
         return new CustomResponse<>(userMessage, null, HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
+
+    @ExceptionHandler({BadCredentialsException.class })
+    public CustomResponse<Object> handleAuthenticationExceptions(BadCredentialsException ex) {
+        return new CustomResponse<>("Error de autenticación", "EL usuario o contraseña no son correctos",
+                HttpStatus.UNAUTHORIZED.value());
+    }
     
-    //test
+    @ExceptionHandler(BadRequestException.class)
+    public CustomResponse<Object> handleBadRequestExceptions(BadRequestException ex) {
+        return new CustomResponse<>("Error de solicitud", ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value());
+    }
+
+    // test
     private HttpServletRequest getCurrentHttpRequest() {
         try {
-            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder
+                    .currentRequestAttributes();
             return attributes.getRequest();
         } catch (IllegalStateException e) {
             return null;

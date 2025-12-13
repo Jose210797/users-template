@@ -2,6 +2,7 @@ package com.template.users.modules.roles.entity;
 
 import java.time.ZonedDateTime;
 
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -38,6 +39,12 @@ public class RoleEntity {
 
     @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
     private Boolean active;
+
+    public RoleEntity(){ }
+
+    public RoleEntity(Long idRole){
+        this.idRole = idRole;
+    }
 
     public Long getIdRole() {
         return idRole;

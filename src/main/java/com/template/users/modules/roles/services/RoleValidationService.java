@@ -1,6 +1,8 @@
 package com.template.users.modules.roles.services;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -34,12 +36,25 @@ public class RoleValidationService {
 
     public void validateActionsExist(List<Long> actionIds) {
         if (actionIds == null || actionIds.isEmpty()) {
-            throw new IllegalArgumentException("Debe asignar al menos una acción al rol", new Throwable("actionIds"));
+            throw new IllegalArgumentException("Debe asignar al menos una acción al rol", new Throwable("actions"));
         }
 
         List<ActionEntity> existingActions = actionRepository.findAllById(actionIds);
         if (existingActions.size() != actionIds.size()) {
-            throw new IllegalArgumentException("Una o más acciones no existen", new Throwable("actionIds"));
+            throw new IllegalArgumentException("Una o más acciones no existen", new Throwable("actions"));
         }
+    }
+
+    public Set<Long> validateExistRolesByList(List<Long> roles) {
+        if (roles == null || roles.isEmpty()) {
+            throw new IllegalArgumentException("Debe asignar al menos un rol a la lista", new Throwable("roles"));
+        }
+        Set<Long> roles_depurados = new HashSet<>(roles);
+        int totalRoles = this.roleRepository.countByIdRoleInAndActiveTrue(roles_depurados);
+        if (totalRoles != roles_depurados.size()) {
+            throw new IllegalArgumentException("No se encontraron todos los roles solicitados", new Throwable("roles"));
+        }
+        return roles_depurados;
+
     }
 }
